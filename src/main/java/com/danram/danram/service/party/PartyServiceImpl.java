@@ -1,12 +1,15 @@
 package com.danram.danram.service.party;
 
+import com.danram.danram.domain.Member;
 import com.danram.danram.domain.Party;
 import com.danram.danram.domain.PartyMember;
 import com.danram.danram.dto.request.party.AddPartyRequestDto;
 import com.danram.danram.dto.request.party.PartyEditRequestDto;
 import com.danram.danram.dto.request.party.PartyJoinRequestDto;
 import com.danram.danram.dto.response.party.*;
+import com.danram.danram.exception.member.MemberIdNotFoundException;
 import com.danram.danram.exception.party.*;
+import com.danram.danram.repository.MemberRepository;
 import com.danram.danram.repository.PartyMemberRepository;
 import com.danram.danram.repository.PartyRepository;
 import com.danram.danram.util.JwtUtil;
@@ -33,8 +36,7 @@ import static com.danram.danram.config.MapperConfig.modelMapper;
 public class PartyServiceImpl implements PartyService {
     private final PartyRepository partyRepository;
     private final PartyMemberRepository partyMemberRepository;
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -81,13 +83,13 @@ public class PartyServiceImpl implements PartyService {
         List<PartyMember> partyMemberList = partyMemberRepository.findByParty(party);
 
         for (PartyMember partyMember : partyMemberList) {
-            RestTemplate restTemplate = new RestTemplate();
-
-            final String response = restTemplate.getForObject(gatewayUrl + "/member/nickname?id=" + partyMember.getMemberId(), String.class);
+            final Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                    () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
+            );
 
             PartyMemberResponseDto responseDto = PartyMemberResponseDto.builder()
                     .memberId(partyMember.getMemberId())
-                    .nickname(response == null ? "이름 없음" : response)
+                    .nickname(member.getNickname() == null ? "이름 없음" : member.getNickname())
                     .build();
             responseDtoList.add(responseDto);
         }

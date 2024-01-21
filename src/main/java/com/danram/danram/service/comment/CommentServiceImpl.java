@@ -1,5 +1,6 @@
 package com.danram.danram.service.comment;
 
+import com.danram.danram.domain.Authority;
 import com.danram.danram.domain.Comment;
 import com.danram.danram.domain.CommentLike;
 import com.danram.danram.dto.request.comment.CommentAddRequestDto;
@@ -10,8 +11,10 @@ import com.danram.danram.dto.response.comment.CommentEditResponseDto;
 import com.danram.danram.exception.comment.CommentIdNotFoundException;
 import com.danram.danram.exception.comment.CommentLikeIdNotFoundException;
 import com.danram.danram.exception.comment.NotAuthorityException;
+import com.danram.danram.exception.member.MemberIdNotFoundException;
 import com.danram.danram.repository.CommentLikeRepository;
 import com.danram.danram.repository.CommentRepository;
+import com.danram.danram.repository.MemberRepository;
 import com.danram.danram.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +38,7 @@ import static com.danram.danram.config.MapperConfig.modelMapper;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -81,16 +83,9 @@ public class CommentServiceImpl implements CommentService {
                 () -> new CommentIdNotFoundException(commentId)
         );
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(MediaType.APPLICATION_JSON); // Content-Type 헤더 설정
-        headers.set("Authorization", "Bearer " + JwtUtil.getAccessToken());
-        headers.set("Member-Id", "DHI " + JwtUtil.getMemberId());
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-
-        final List<String> auths = restTemplate.exchange(gatewayUrl + "/auth/check", HttpMethod.GET, requestEntity, List.class).getBody();
+        List<Authority> auths = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
+        ).getAuthorities();
 
 
         if(comment.getMemberId() == JwtUtil.getMemberId()) {
@@ -157,7 +152,9 @@ public class CommentServiceImpl implements CommentService {
         for(Comment comment: updatedAt) {
             final int size = commentLikeRepository.findByCommentIdAndDeletedFalse(comment.getCommentId()).size();
 
-            final String forObject = restTemplate.getForObject(gatewayUrl + "/member/nickname?id=" + comment.getMemberId(), String.class);
+            String forObject = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                    () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
+            ).getNickname();
 
             responseDtoList.add(
                     CommentAllResponseDto.builder()

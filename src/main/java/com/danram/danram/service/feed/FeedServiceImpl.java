@@ -3,6 +3,7 @@ package com.danram.danram.service.feed;
 import com.danram.danram.domain.Feed;
 import com.danram.danram.domain.FeedLike;
 import com.danram.danram.domain.Image;
+import com.danram.danram.domain.Member;
 import com.danram.danram.dto.request.feed.FeedAddRequestDto;
 import com.danram.danram.dto.request.feed.FeedEditRequestDto;
 import com.danram.danram.dto.response.feed.FeedAddResponseDto;
@@ -13,9 +14,11 @@ import com.danram.danram.exception.feed.FeedIdNotFoundException;
 import com.danram.danram.exception.feed.FeedLikeIdNotFoundException;
 import com.danram.danram.exception.feed.FeedMakeException;
 import com.danram.danram.exception.feed.RoleNotExistException;
+import com.danram.danram.exception.member.MemberIdNotFoundException;
 import com.danram.danram.repository.FeedLikeRepository;
 import com.danram.danram.repository.FeedRepository;
 import com.danram.danram.repository.ImageRepository;
+import com.danram.danram.repository.MemberRepository;
 import com.danram.danram.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +46,7 @@ public class FeedServiceImpl implements FeedService {
     private final FeedRepository feedRepository;
     private final ImageRepository imageRepository;
     private final FeedLikeRepository feedLikeRepository;
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -132,9 +134,9 @@ public class FeedServiceImpl implements FeedService {
         List<FeedAllInfoResponseDto> responseDtoList = new ArrayList<>();
 
         for(Feed feed: feedSlice) {
-            RestTemplate restTemplate = new RestTemplate();
-
-            final String response = restTemplate.getForObject(gatewayUrl + "/member/nickname?id=" + feed.getMemberId(), String.class);
+            final String response = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                    () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
+            ).getNickname();
 
             responseDtoList.add(
                     FeedAllInfoResponseDto.builder()
@@ -179,9 +181,9 @@ public class FeedServiceImpl implements FeedService {
 
         FeedEditResponseDto map = modelMapper.map(feedRepository.save(feed), FeedEditResponseDto.class);
 
-        RestTemplate restTemplate = new RestTemplate();
-
-        final String response = restTemplate.getForObject(gatewayUrl + "/member/nickname?id=" + feed.getMemberId(), String.class);
+        final String response = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
+        ).getNickname();
 
         map.setMemberName(response == null ? "이름 없음" : response);
 
@@ -195,17 +197,9 @@ public class FeedServiceImpl implements FeedService {
                 () -> new FeedIdNotFoundException(feedId)
         );
 
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.setContentType(MediaType.APPLICATION_JSON); // Content-Type 헤더 설정
-        headers.set("Authorization", "Bearer " + JwtUtil.getAccessToken());
-        headers.set("Member-Id", "DHI " + JwtUtil.getMemberId());
-
-
-        HttpEntity<String> requestEntity = new HttpEntity<>(null, headers);
-
-        final List<String> auths = restTemplate.exchange(gatewayUrl + "/auth/check", HttpMethod.GET, requestEntity, List.class).getBody();
+        final Member member = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
+                () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
+        );
 
         if(feed.getMemberId() == JwtUtil.getMemberId()) {
             feed.setDeletedAt(LocalDateTime.now());
@@ -215,7 +209,7 @@ public class FeedServiceImpl implements FeedService {
 
             return "Deleted by ";
         }
-        else if(auths.contains("ROLE_ADMIN")) {
+        else if(member.getAuthorities().contains("ROLE_ADMIN")) {
             feed.setDeletedAt(LocalDateTime.now());
             feed.setDescription("관리자에 의해 삭제");
 

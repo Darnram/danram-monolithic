@@ -28,12 +28,13 @@ public class SpringConfig {
     }
 
     @Bean
-    public FeedService feedService(final FeedRepository feedRepository, final ImageRepository imageRepository, final FeedLikeRepository feedLikeRepository) {
-        return new FeedServiceImpl(feedRepository, imageRepository, feedLikeRepository);
+    public FeedService feedService(final FeedRepository feedRepository, final ImageRepository imageRepository, final FeedLikeRepository feedLikeRepository, final MemberRepository memberRepository) {
+        return new FeedServiceImpl(feedRepository, imageRepository, feedLikeRepository, memberRepository);
     }
 
     @Bean
-    public PartyService partyService(final PartyRepository partyRepository, final PartyMemberRepository partyMemberRepository) {
-        return new PartyServiceImpl(partyRepository, partyMemberRepository);
+    public PartyService partyService(final PartyRepository partyRepository, final PartyMemberRepository partyMemberRepository,
+                                    final MemberRepository memberRepository) {
+        return new PartyServiceImpl(partyRepository, partyMemberRepository, memberRepository);
     }
 }
