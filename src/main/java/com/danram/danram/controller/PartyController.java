@@ -65,9 +65,9 @@ public class PartyController {
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "모임에 참여 성공")
     })
-    @PostMapping("/join")
-    public ResponseEntity<PartyJoinResponseDto> joinParty(@RequestBody PartyJoinRequestDto dto) {
-        return ResponseEntity.ok(partyService.joinParty(dto));
+    @GetMapping("/join")
+    public ResponseEntity<PartyJoinResponseDto> joinParty(@RequestParam Long partyId) {
+        return ResponseEntity.ok(partyService.joinParty(new PartyJoinRequestDto(partyId)));
     }
 
     @ApiResponses({
