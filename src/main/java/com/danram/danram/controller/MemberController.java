@@ -4,6 +4,7 @@ import com.danram.danram.domain.Member;
 import com.danram.danram.dto.request.login.OauthLoginRequestDto;
 import com.danram.danram.dto.request.member.MemberEditRequestDto;
 import com.danram.danram.dto.response.login.LoginResponseDto;
+import com.danram.danram.dto.response.login.OauthLoginResponseDto;
 import com.danram.danram.dto.response.member.MemberInfoResponseDto;
 import com.danram.danram.dto.response.member.MemberResponseDto;
 import com.danram.danram.service.member.MemberService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static com.danram.danram.config.MapperConfig.modelMapper;
 
 @RestController
 @RequestMapping("/member")
@@ -30,7 +33,7 @@ public class MemberController {
         Optional<Member> result = memberService.checkDuplicatedEmail(dto.getEmail());
 
         if(result.isEmpty()) {
-            return ResponseEntity.ok(memberService.signUp(dto));
+            return ResponseEntity.ok(memberService.signUp(modelMapper.map(dto, OauthLoginResponseDto.class)));
         }
         else
         {

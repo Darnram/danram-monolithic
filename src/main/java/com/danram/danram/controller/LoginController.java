@@ -1,8 +1,10 @@
 package com.danram.danram.controller;
 
+import com.danram.danram.domain.Member;
 import com.danram.danram.dto.response.login.LoginResponseDto;
 import com.danram.danram.dto.response.login.OauthLoginResponseDto;
 import com.danram.danram.service.login.OAuthService;
+import com.danram.danram.service.member.MemberService;
 import com.danram.danram.service.oauth.SocialLoginType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +13,15 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/login")
 @RequiredArgsConstructor
 @Slf4j
 public class LoginController {
     private final OAuthService oauthService;
-    @Value("${gateway.url}")
-    private String gatewayUrl;
+    private final MemberService memberService;
 
     @GetMapping(value = "/{socialLoginType}")
     public void socialLoginType(
@@ -34,16 +37,14 @@ public class LoginController {
             @RequestParam(name = "code") String code) {
         OauthLoginResponseDto oauthLoginResponseDto = oauthService.getLoginResponseDto(socialLoginType,code);
 
-        RestTemplate restTemplate = new RestTemplate();
+        Optional<Member> result = memberService.checkDuplicatedEmail(oauthLoginResponseDto.getEmail());
 
-        // 요청 매개변수 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<OauthLoginResponseDto> request = new HttpEntity<>(oauthLoginResponseDto, headers);
-
-
-        final LoginResponseDto response = restTemplate.exchange(gatewayUrl + "/member/sign-up", HttpMethod.POST, request, LoginResponseDto.class).getBody();
-
-        return ResponseEntity.ok(response);
+        if(result.isEmpty()) {
+            return ResponseEntity.ok(memberService.signUp(oauthLoginResponseDto));
+        }
+        else
+        {
+            return ResponseEntity.ok(memberService.signIn(result.get()));
+        }
     }
 }

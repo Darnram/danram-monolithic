@@ -25,7 +25,10 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"))
                 .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html/**"))
-                .requestMatchers(new AntPathRequestMatcher("/login"));
+                .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"))
+                .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**"))
+                .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**"))
+                .requestMatchers(new AntPathRequestMatcher("/login/**"));
     }
 
     @Bean
@@ -33,7 +36,6 @@ public class SecurityConfig {
         http.csrf(c -> c.disable())
                 .cors(c -> c.disable())
                 .authorizeHttpRequests(request -> request
-                        //.dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
                         .requestMatchers("/member").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                         .requestMatchers("/party").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
                         .requestMatchers("/feed").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")

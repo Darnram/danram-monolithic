@@ -6,6 +6,7 @@ import com.danram.danram.domain.Member;
 import com.danram.danram.dto.request.login.OauthLoginRequestDto;
 import com.danram.danram.dto.request.member.MemberEditRequestDto;
 import com.danram.danram.dto.response.login.LoginResponseDto;
+import com.danram.danram.dto.response.login.OauthLoginResponseDto;
 import com.danram.danram.dto.response.member.MemberAdminResponseDto;
 import com.danram.danram.dto.response.member.MemberInfoResponseDto;
 import com.danram.danram.dto.response.member.MemberResponseDto;
@@ -48,7 +49,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public LoginResponseDto signUp(final OauthLoginRequestDto dto) {
+    public LoginResponseDto signUp(final OauthLoginResponseDto dto) {
         Long memberId = System.currentTimeMillis();
 
         Member member = Member.builder()

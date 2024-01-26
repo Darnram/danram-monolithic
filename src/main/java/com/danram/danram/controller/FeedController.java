@@ -75,7 +75,7 @@ public class FeedController {
 
     //free
     @GetMapping("/all")
-    public ResponseEntity<List<FeedAllInfoResponseDto>> getALl(@RequestParam Long page) {
-        return ResponseEntity.ok(feedService.findAll(page));
+    public ResponseEntity<List<FeedAllInfoResponseDto>> getALl(@RequestParam Long partyId, @RequestParam Long page) {
+        return ResponseEntity.ok(feedService.findAll(partyId, page));
     }
 }

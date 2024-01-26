@@ -123,8 +123,9 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional
-    public List<FeedAllInfoResponseDto> findAll(final Long page) {
-        Slice<Feed> feedSlice = feedRepository.findByDeletedAtIsNull(
+    public List<FeedAllInfoResponseDto> findAll(final Long partyId, final Long page) {
+        Slice<Feed> feedSlice = feedRepository.findByPartyIdAndDeletedAtIsNull(
+                partyId,
                 PageRequest.of(
                         Integer.parseInt(page.toString()),
                         10,

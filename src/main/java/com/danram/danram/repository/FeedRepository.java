@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
     public Slice<Feed> findByDeletedAtIsNull(Pageable pageable);
+    public Slice<Feed> findByPartyIdAndDeletedAtIsNull(Long partyId, Pageable pageable);
 }

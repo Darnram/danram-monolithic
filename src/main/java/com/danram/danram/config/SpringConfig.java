@@ -2,6 +2,8 @@ package com.danram.danram.config;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.danram.danram.repository.*;
+import com.danram.danram.service.comment.CommentService;
+import com.danram.danram.service.comment.CommentServiceImpl;
 import com.danram.danram.service.feed.FeedService;
 import com.danram.danram.service.feed.FeedServiceImpl;
 import com.danram.danram.service.member.MemberService;
@@ -36,5 +38,12 @@ public class SpringConfig {
     public PartyService partyService(final PartyRepository partyRepository, final PartyMemberRepository partyMemberRepository,
                                     final MemberRepository memberRepository) {
         return new PartyServiceImpl(partyRepository, partyMemberRepository, memberRepository);
+    }
+
+    @Bean
+    public CommentService commentService(final CommentRepository commentRepository,
+                                        final CommentLikeRepository commentLikeRepository,
+                                         final MemberRepository memberRepository) {
+        return new CommentServiceImpl(commentRepository, commentLikeRepository, memberRepository);
     }
 }

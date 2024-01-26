@@ -1,6 +1,6 @@
 package com.danram.danram.dto.response.feed;
 
-import com.danram.feed.domain.Image;
+import com.danram.danram.domain.Image;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

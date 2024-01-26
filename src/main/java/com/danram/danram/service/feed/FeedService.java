@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface FeedService {
     public FeedAddResponseDto addFeed(FeedAddRequestDto dto, List<String> files);
-    public List<FeedAllInfoResponseDto> findAll(Long page);
+    public List<FeedAllInfoResponseDto> findAll(Long partyId, Long page);
     public FeedEditResponseDto editFeed(FeedEditRequestDto dto, String img);
     public String deleteFeed(Long feedId);
     public FeedLikeResponseDto likeFeed(Long feedId);
