@@ -54,6 +54,9 @@ dependencies {
     //redis
     implementation 'org.springframework.data:spring-data-redis:3.2.1'
     implementation 'io.lettuce:lettuce-core:6.3.0.RELEASE'
+
+    //slack
+    implementation 'com.github.maricn:logback-slack-appender:1.4.0'
 }
 
 tasks.named('test') {

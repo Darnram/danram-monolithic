@@ -28,19 +28,6 @@ public class MemberController {
     private final MemberService memberService;
     private final S3UploadService s3UploadService;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<LoginResponseDto> signUp(@RequestBody OauthLoginRequestDto dto) {
-        Optional<Member> result = memberService.checkDuplicatedEmail(dto.getEmail());
-
-        if(result.isEmpty()) {
-            return ResponseEntity.ok(memberService.signUp(modelMapper.map(dto, OauthLoginResponseDto.class)));
-        }
-        else
-        {
-            return ResponseEntity.ok(memberService.signIn(result.get()));
-        }
-    }
-
     @GetMapping ("/verify")
     public ResponseEntity<String> tokenExist() {
         return ResponseEntity.ok(memberService.verifyMember());

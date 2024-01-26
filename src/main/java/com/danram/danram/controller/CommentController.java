@@ -44,10 +44,4 @@ public class CommentController {
     public ResponseEntity<Long> unlikeComment(@RequestParam Long commentId) {
         return ResponseEntity.ok(commentService.unlikeComment(commentId));
     }
-
-    //free
-    @GetMapping("/all")
-    public ResponseEntity<List<CommentAllResponseDto>> getAllComment(@RequestParam Long feedId) {
-        return ResponseEntity.ok(commentService.findAll(feedId));
-    }
 }

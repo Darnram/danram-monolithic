@@ -72,10 +72,4 @@ public class FeedController {
     public ResponseEntity<FeedLikeResponseDto> unlikeFeed(@RequestParam Long feedId) {
         return ResponseEntity.ok(feedService.unlikeFeed(feedId));
     }
-
-    //free
-    @GetMapping("/all")
-    public ResponseEntity<List<FeedAllInfoResponseDto>> getALl(@RequestParam Long partyId, @RequestParam Long page) {
-        return ResponseEntity.ok(feedService.findAll(partyId, page));
-    }
 }
