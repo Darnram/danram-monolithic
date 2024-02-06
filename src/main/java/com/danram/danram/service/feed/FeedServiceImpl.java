@@ -1,24 +1,19 @@
 package com.danram.danram.service.feed;
 
-import com.danram.danram.domain.Feed;
-import com.danram.danram.domain.FeedLike;
-import com.danram.danram.domain.Image;
-import com.danram.danram.domain.Member;
+import com.danram.danram.domain.*;
 import com.danram.danram.dto.request.feed.FeedAddRequestDto;
 import com.danram.danram.dto.request.feed.FeedEditRequestDto;
 import com.danram.danram.dto.response.feed.FeedAddResponseDto;
 import com.danram.danram.dto.response.feed.FeedAllInfoResponseDto;
 import com.danram.danram.dto.response.feed.FeedEditResponseDto;
 import com.danram.danram.dto.response.feed.FeedLikeResponseDto;
+import com.danram.danram.enums.ReportEnum;
 import com.danram.danram.exception.feed.FeedIdNotFoundException;
 import com.danram.danram.exception.feed.FeedLikeIdNotFoundException;
 import com.danram.danram.exception.feed.FeedMakeException;
 import com.danram.danram.exception.feed.RoleNotExistException;
 import com.danram.danram.exception.member.MemberIdNotFoundException;
-import com.danram.danram.repository.FeedLikeRepository;
-import com.danram.danram.repository.FeedRepository;
-import com.danram.danram.repository.ImageRepository;
-import com.danram.danram.repository.MemberRepository;
+import com.danram.danram.repository.*;
 import com.danram.danram.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +42,7 @@ public class FeedServiceImpl implements FeedService {
     private final ImageRepository imageRepository;
     private final FeedLikeRepository feedLikeRepository;
     private final MemberRepository memberRepository;
+    private final FeedReportRepository feedReportRepository;
 
     @Override
     @Transactional
@@ -268,5 +264,24 @@ public class FeedServiceImpl implements FeedService {
                 .feedId(feedId)
                 .likeCount((long) size)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public FeedReport reportFeed(final Long feedId, final Long reportType) {
+        final Feed feed = feedRepository.findById(feedId).orElseThrow(
+                () -> new FeedIdNotFoundException(feedId)
+        );
+
+        return feedReportRepository.save(
+                FeedReport.builder()
+                        .contentType(0L)
+                        .description("feed: " + JwtUtil.getEmail() + "의 " + ReportEnum.findByValue(reportType) + "신고")
+                        .reportType(reportType)
+                        .memberId(JwtUtil.getMemberId())
+                        .memberEmail(JwtUtil.getEmail())
+                        .feedOwner(feed.getMemberEmail())
+                        .build()
+        );
     }
 }

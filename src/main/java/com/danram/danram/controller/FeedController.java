@@ -1,5 +1,6 @@
 package com.danram.danram.controller;
 
+import com.danram.danram.domain.FeedReport;
 import com.danram.danram.dto.request.feed.FeedAddRequestDto;
 import com.danram.danram.dto.request.feed.FeedEditRequestDto;
 import com.danram.danram.dto.response.feed.FeedAddResponseDto;
@@ -71,5 +72,10 @@ public class FeedController {
     @GetMapping("/unlike")
     public ResponseEntity<FeedLikeResponseDto> unlikeFeed(@RequestParam Long feedId) {
         return ResponseEntity.ok(feedService.unlikeFeed(feedId));
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<FeedReport> declare(@RequestParam Long feedId, @RequestParam Long reportType) {
+        return ResponseEntity.ok(feedService.reportFeed(feedId, reportType));
     }
 }

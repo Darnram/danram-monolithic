@@ -30,8 +30,9 @@ public class SpringConfig {
     }
 
     @Bean
-    public FeedService feedService(final FeedRepository feedRepository, final ImageRepository imageRepository, final FeedLikeRepository feedLikeRepository, final MemberRepository memberRepository) {
-        return new FeedServiceImpl(feedRepository, imageRepository, feedLikeRepository, memberRepository);
+    public FeedService feedService(final FeedRepository feedRepository, final ImageRepository imageRepository, final FeedLikeRepository feedLikeRepository, final MemberRepository memberRepository,
+                                    FeedReportRepository feedReportRepository) {
+        return new FeedServiceImpl(feedRepository, imageRepository, feedLikeRepository, memberRepository, feedReportRepository);
     }
 
     @Bean

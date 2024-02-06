@@ -1,6 +1,7 @@
 package com.danram.danram.service.feed;
 
 
+import com.danram.danram.domain.FeedReport;
 import com.danram.danram.dto.request.feed.FeedAddRequestDto;
 import com.danram.danram.dto.request.feed.FeedEditRequestDto;
 import com.danram.danram.dto.response.feed.FeedAddResponseDto;
@@ -17,4 +18,5 @@ public interface FeedService {
     public String deleteFeed(Long feedId);
     public FeedLikeResponseDto likeFeed(Long feedId);
     public FeedLikeResponseDto unlikeFeed(final Long feedId);
+    public FeedReport reportFeed(Long feedId, Long reportType);
 }
