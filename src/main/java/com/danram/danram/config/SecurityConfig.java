@@ -29,7 +29,6 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**"))
                 .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**"))
                 .requestMatchers(new AntPathRequestMatcher("/no-auth/**"))
-                .requestMatchers(new AntPathRequestMatcher("/party/add/img"))
                 .requestMatchers(new AntPathRequestMatcher("/login/**"));
     }
 
