@@ -4,6 +4,7 @@ import com.danram.danram.domain.Member;
 import com.danram.danram.domain.Party;
 import com.danram.danram.domain.PartyMember;
 import com.danram.danram.dto.request.party.AddPartyRequestDto;
+import com.danram.danram.dto.request.party.AddPartyWithoutImgRequestDto;
 import com.danram.danram.dto.request.party.PartyEditRequestDto;
 import com.danram.danram.dto.request.party.PartyJoinRequestDto;
 import com.danram.danram.dto.response.party.*;
@@ -46,7 +47,40 @@ public class PartyServiceImpl implements PartyService {
         Party party = Party.builder()
                 .memberId(memberId)
                 .memberEmail(dto.getMemberEmail())
-                .img(imgUrl)
+                .img(imgUrl == null ? " " : imgUrl)
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .password(null)
+                .partyType(dto.getPartyType())
+                .max(dto.getMax())
+                .startedAt(dto.getStartedAt())
+                .endAt(dto.getEndAt())
+                .location(dto.getLocation())
+                .currentCount(1L)
+                .deleted(false)
+                .build();
+
+        final Party save = partyRepository.save(party);
+
+        partyMemberRepository.save(
+                PartyMember.builder()
+                        .party(save)
+                        .memberId(memberId)
+                        .build()
+        );
+
+        return modelMapper.map(save, AddPartyResponseDto.class);
+    }
+
+    @Override
+    @Transactional
+    public AddPartyResponseDto addParty(AddPartyWithoutImgRequestDto dto) {
+        Long memberId = JwtUtil.getMemberId();
+
+        Party party = Party.builder()
+                .memberId(memberId)
+                .memberEmail(dto.getMemberEmail())
+                .img("https://talkimg.imbc.com/TVianUpload/tvian/TViews/image/2022/10/04/75e7a815-bc3b-4eed-b343-bd7723eb5f9b.jpg")
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .password(null)
@@ -232,6 +266,14 @@ public class PartyServiceImpl implements PartyService {
         party.minusCurrentCount();
 
         return true;
+    }
+
+    @Override
+    @Transactional
+    public Party getPartyInfo(final Long partyId) {
+        return partyRepository.findById(partyId).orElseThrow(
+                () -> new PartyNotFoundException(partyId.toString())
+        );
     }
 
     @Override

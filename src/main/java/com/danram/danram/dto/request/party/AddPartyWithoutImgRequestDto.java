@@ -1,8 +1,10 @@
 package com.danram.danram.dto.request.party;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -10,9 +12,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class AddPartyRequestDto {
-    private MultipartFile img;
+public class AddPartyWithoutImgRequestDto {
     private String title;
     private String description;
     private String password;
@@ -20,8 +20,6 @@ public class AddPartyRequestDto {
     private Long max;
     private String location;
     private String memberEmail;
-    private String alarmTime;
-    private String days;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startedAt;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

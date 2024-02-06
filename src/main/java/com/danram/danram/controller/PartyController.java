@@ -1,6 +1,8 @@
 package com.danram.danram.controller;
 
+import com.danram.danram.domain.Party;
 import com.danram.danram.dto.request.party.AddPartyRequestDto;
+import com.danram.danram.dto.request.party.AddPartyWithoutImgRequestDto;
 import com.danram.danram.dto.request.party.PartyEditRequestDto;
 import com.danram.danram.dto.request.party.PartyJoinRequestDto;
 import com.danram.danram.dto.response.party.*;
@@ -37,6 +39,8 @@ public class PartyController {
     public ResponseEntity<AddPartyResponseDto> addParty(@ModelAttribute AddPartyRequestDto dto) throws IOException {
         String imgUrl = null;
 
+        log.error("dto: {}", dto);
+
         if (dto.getImg() != null) {
             imgUrl = s3UploadService.upload(dto.getImg(),"party_image", false);
         }
@@ -44,6 +48,14 @@ public class PartyController {
             throw new FileNotFoundException("file is not exist.");
 
         return ResponseEntity.ok(partyService.addParty(dto,imgUrl));
+    }
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "모임 추가 성공")
+    })
+    @PostMapping("/test")
+    public ResponseEntity<AddPartyResponseDto> addParty(@RequestBody AddPartyWithoutImgRequestDto dto) throws IOException {
+        return ResponseEntity.ok(partyService.addParty(dto));
     }
 
     @ApiResponses({

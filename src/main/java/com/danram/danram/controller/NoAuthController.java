@@ -1,5 +1,6 @@
 package com.danram.danram.controller;
 
+import com.danram.danram.domain.Party;
 import com.danram.danram.dto.response.comment.CommentAllResponseDto;
 import com.danram.danram.dto.response.feed.FeedAllInfoResponseDto;
 import com.danram.danram.dto.response.party.PartyMemberResponseDto;
@@ -31,6 +32,11 @@ public class NoAuthController {
     @PostMapping("/token/reissue")
     public ResponseEntity<TokenResponseDto> reissueAccessToken() {
         return ResponseEntity.ok(memberService.reissueAccessToken());
+    }
+
+    @GetMapping("/party/info")
+    public ResponseEntity<Party> getPartyInfo(@RequestParam Long partyId) {
+        return ResponseEntity.ok(partyService.getPartyInfo(partyId));
     }
 
     @GetMapping("/party/search")
