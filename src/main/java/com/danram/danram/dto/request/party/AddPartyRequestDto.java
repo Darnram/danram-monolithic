@@ -20,8 +20,6 @@ public class AddPartyRequestDto {
     private Long max;
     private String location;
     private String memberEmail;
-    private String alarmTime;
-    private String days;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startedAt;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

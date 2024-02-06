@@ -278,6 +278,18 @@ public class PartyServiceImpl implements PartyService {
 
     @Override
     @Transactional
+    public PartyResponseDto addImg(final Long partyId, final String imgUrl) {
+        Party party = partyRepository.findById(partyId).orElseThrow(
+                () -> new PartyNotFoundException(partyId.toString())
+        );
+
+        party.setImg(imgUrl);
+
+        return modelMapper.map(partyRepository.save(party), PartyResponseDto.class);
+    }
+
+    @Override
+    @Transactional
     public PartyEditResponseDto editParty(PartyEditRequestDto dto, String imgUrl) {
         Long memberId = JwtUtil.getMemberId();
 

@@ -23,4 +23,5 @@ public interface PartyService {
     public Boolean deleteParty(Long partyId);
     public Boolean exitParty(Long partyId);
     public Party getPartyInfo(Long partyId);
+    public PartyResponseDto addImg(Long partyId, String imgUrl);
 }

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -32,7 +33,7 @@ public class PartyController {
     private final S3UploadService s3UploadService;
     private final PartyService partyService;
 
-    @ApiResponses({
+    /*@ApiResponses({
             @ApiResponse(responseCode = "200",description = "모임 추가 성공")
     })
     @PostMapping(value= "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -48,14 +49,29 @@ public class PartyController {
             throw new FileNotFoundException("file is not exist.");
 
         return ResponseEntity.ok(partyService.addParty(dto,imgUrl));
-    }
+    }*/
 
     @ApiResponses({
             @ApiResponse(responseCode = "200",description = "모임 추가 성공")
     })
-    @PostMapping("/test")
+    @PostMapping("/add/without-img")
     public ResponseEntity<AddPartyResponseDto> addParty(@RequestBody AddPartyWithoutImgRequestDto dto) throws IOException {
         return ResponseEntity.ok(partyService.addParty(dto));
+    }
+
+    @PostMapping(value = "/add/img", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<PartyResponseDto> addImg(@RequestParam Long partyId, @RequestParam(name = "img") MultipartFile img) throws IOException {
+        String imgUrl = null;
+
+        log.info("part id: {}", partyId);
+
+        if (img != null) {
+            imgUrl = s3UploadService.upload(img,"party_image", false);
+        }
+        else
+            throw new FileNotFoundException("file is not exist.");
+
+        return ResponseEntity.ok(partyService.addImg(partyId, imgUrl));
     }
 
     @ApiResponses({
