@@ -3,6 +3,7 @@ package com.danram.danram.service.member;
 import com.danram.danram.domain.Authority;
 import com.danram.danram.domain.DeletedMember;
 import com.danram.danram.domain.Member;
+import com.danram.danram.dto.request.login.LoginRequestDto;
 import com.danram.danram.dto.request.login.OauthLoginRequestDto;
 import com.danram.danram.dto.request.member.MemberEditRequestDto;
 import com.danram.danram.dto.response.login.LoginResponseDto;
@@ -50,6 +51,36 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public LoginResponseDto signUp(final OauthLoginResponseDto dto) {
+        Long memberId = System.currentTimeMillis();
+
+        Member member = Member.builder()
+                .memberId(memberId)
+                .loginType(dto.getLoginType())
+                .img(dto.getProfileImg())
+                .ban(false)
+                .pro(false)
+                .nickname(dto.getNickname())
+                .email(dto.getEmail())
+                .accessToken(JwtUtil.createJwt(memberId, dto.getEmail()))
+                .accessTokenExpiredAt(LocalDate.now().plusYears(1))
+                .refreshToken(JwtUtil.createRefreshToken(memberId))
+                .refreshTokenExpiredAt(LocalDate.now().plusYears(1))
+                .authorities(List.of(
+                        Authority.builder()
+                                .authorityName("ROLE_USER")
+                                .build()
+                ))
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        final Member save = memberRepository.save(member);
+
+        return modelMapper.map(save, LoginResponseDto.class);
+    }
+
+    @Override
+    @Transactional
+    public LoginResponseDto signUp(final LoginRequestDto dto) {
         Long memberId = System.currentTimeMillis();
 
         Member member = Member.builder()

@@ -1,6 +1,7 @@
 package com.danram.danram.controller;
 
 import com.danram.danram.domain.Member;
+import com.danram.danram.dto.request.login.LoginRequestDto;
 import com.danram.danram.dto.response.login.LoginResponseDto;
 import com.danram.danram.dto.response.login.OauthLoginResponseDto;
 import com.danram.danram.service.login.OAuthService;
@@ -41,6 +42,19 @@ public class LoginController {
 
         if(result.isEmpty()) {
             return ResponseEntity.ok(memberService.signUp(oauthLoginResponseDto));
+        }
+        else
+        {
+            return ResponseEntity.ok(memberService.signIn(result.get()));
+        }
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<LoginResponseDto> signUp(@RequestBody LoginRequestDto dto) {
+        Optional<Member> result = memberService.checkDuplicatedEmail(dto.getEmail());
+
+        if(result.isEmpty()) {
+            return ResponseEntity.ok(memberService.signUp(dto));
         }
         else
         {

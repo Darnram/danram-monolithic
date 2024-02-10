@@ -1,6 +1,7 @@
 package com.danram.danram.service.member;
 
 import com.danram.danram.domain.Member;
+import com.danram.danram.dto.request.login.LoginRequestDto;
 import com.danram.danram.dto.request.login.OauthLoginRequestDto;
 import com.danram.danram.dto.request.member.MemberEditRequestDto;
 import com.danram.danram.dto.response.login.LoginResponseDto;
@@ -17,6 +18,7 @@ public interface MemberService {
     public List<Member> findAll();
     public Optional<Member> checkDuplicatedEmail(String email);
     public LoginResponseDto signUp(OauthLoginResponseDto dto);
+    public LoginResponseDto signUp(LoginRequestDto dto);
     public LoginResponseDto signIn(Member member);
     public List<String> getAuthorities();
     public String verifyMember();
