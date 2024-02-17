@@ -10,13 +10,17 @@ import com.danram.danram.service.comment.CommentService;
 import com.danram.danram.service.feed.FeedService;
 import com.danram.danram.service.member.MemberService;
 import com.danram.danram.service.party.PartyService;
+import com.danram.danram.service.s3.S3UploadService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,6 +32,7 @@ public class NoAuthController {
     private final PartyService partyService;
     private final FeedService feedService;
     private final CommentService commentService;
+    private final S3UploadService s3UploadService;
 
     @PostMapping("/token/reissue")
     public ResponseEntity<TokenResponseDto> reissueAccessToken() {
@@ -86,4 +91,9 @@ public class NoAuthController {
     public ResponseEntity<List<String>> getAuthorities() {
         return ResponseEntity.ok(memberService.getAuthorities());
     }
+/*
+    @PostMapping(value = "/s3", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<String> upload(@RequestParam("img")MultipartFile file) throws IOException {
+        return ResponseEntity.ok(s3UploadService.upload(file, "test", false));
+    }*/
 }

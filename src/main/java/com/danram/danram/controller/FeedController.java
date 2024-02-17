@@ -42,7 +42,7 @@ public class FeedController {
 
         if(dto.getImages().size() > 0) {
             for (MultipartFile file : dto.getImages()) {
-                files.add(s3UploadService.upload(file, "/danram/feed", false));
+                files.add(s3UploadService.upload(file, "danram/feed", false));
             }
         }
 
