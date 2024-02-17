@@ -25,17 +25,10 @@ public class S3UploadServiceImpl implements S3UploadService {
     public String upload(MultipartFile multipartFile, String dirName, boolean profile) throws IOException {
         String fileName;
 
-        fileName = multipartFile.getOriginalFilename().replaceAll("[^a-zA-Z0-9.\\(\\)]", "");
+        fileName = multipartFile.getOriginalFilename();
 
         String[] parts = fileName.split("\\.");
 
-        if(parts[0].isEmpty()) {
-            throw new FileNameNotValidException();
-        }
-
-        if (parts.length < 2) {
-            throw new IllegalArgumentException("Invalid file type => file name: " + fileName);
-        }
         String ext = parts[1];
         String contentType = "";
 

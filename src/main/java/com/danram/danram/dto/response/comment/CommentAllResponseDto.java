@@ -2,6 +2,8 @@ package com.danram.danram.dto.response.comment;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -13,4 +15,5 @@ public class CommentAllResponseDto {
     private String memberName;
     private String content;
     private Long likeCount;
+    private LocalDateTime createdAt;
 }

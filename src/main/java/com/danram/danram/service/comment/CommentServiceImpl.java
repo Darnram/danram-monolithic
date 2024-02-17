@@ -163,6 +163,7 @@ public class CommentServiceImpl implements CommentService {
                             .likeCount((long) size)
                             .memberId(comment.getMemberId())
                             .memberName(forObject == null ? "이름 없음" : forObject)
+                            .createdAt(comment.getUpdatedAt())
                             .build()
             );
         }
