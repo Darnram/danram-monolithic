@@ -16,10 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -113,10 +111,4 @@ public class NoAuthController {
             return "Error occurred while fetching HTML";
         }
     }
-
-/*
-    @PostMapping(value = "/s3", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<String> upload(@RequestParam("img")MultipartFile file) throws IOException {
-        return ResponseEntity.ok(s3UploadService.upload(file, "test", false));
-    }*/
 }
