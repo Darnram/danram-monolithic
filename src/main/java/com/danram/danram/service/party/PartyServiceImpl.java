@@ -141,6 +141,19 @@ public class PartyServiceImpl implements PartyService {
     }
 
     @Override
+    @Transactional
+    public List<PartyResponseDto> findParty(final Long sortType) {
+        List<PartyResponseDto> responseDtoList = new ArrayList<>();
+        for (Party party : partyRepository.findPartyBySortTypeTrue()) {
+            responseDtoList.add(
+                    modelMapper.map(party, PartyResponseDto.class)
+            );
+        }
+
+        return responseDtoList;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<PartyResponseDto> findPartyByPartyType(Long partyType, Long sortType, Integer pages) {
         Pageable pageable = getPageable(sortType, pages);

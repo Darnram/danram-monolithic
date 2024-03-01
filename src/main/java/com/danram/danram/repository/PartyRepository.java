@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PartyRepository extends JpaRepository<Party, Long> {
 
@@ -26,4 +28,7 @@ public interface PartyRepository extends JpaRepository<Party, Long> {
             "p.partyType = :partyType and " +
             "p.deleted = false")
     Slice<Party> findPartyBySearchAndPartyType(@Param("query") String query,@Param("partyType") Long partyType,Pageable pageable);
+
+    @Query("select p from Party p order by p.updatedAt")
+    public List<Party> findPartyBySortTypeTrue();
 }

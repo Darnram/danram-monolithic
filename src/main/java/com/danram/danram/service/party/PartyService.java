@@ -13,6 +13,7 @@ public interface PartyService {
     public AddPartyResponseDto addParty(AddPartyRequestDto dto, String imgUrl);
     public AddPartyResponseDto addParty(AddPartyWithoutImgRequestDto dto);
     public List<PartyResponseDto> findParty(Long sortType, Integer pages);
+    public List<PartyResponseDto> findParty(Long sortType);
     public List<PartyResponseDto> findMyParty(Integer pages);
     public List<PartyResponseDto> findPartyByPartyType(Long partyType,Long sortType,Integer pages);
     public List<PartyResponseDto> findPartyBySearch(Long sortType,String query,Integer pages);

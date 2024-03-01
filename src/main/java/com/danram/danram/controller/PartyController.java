@@ -82,12 +82,20 @@ public class PartyController {
         return ResponseEntity.ok(partyService.findMyParty(pages));
     }
 
-    @ApiResponses({
+    /*@ApiResponses({
             @ApiResponse(responseCode = "200",description = "모임 조회 성공")
     })
     @GetMapping
     public ResponseEntity<List<PartyResponseDto>> getParty(@RequestParam Long sortType,@RequestParam Integer pages) {
         return ResponseEntity.ok(partyService.findParty(sortType,pages));
+    }*/
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "모임 조회 성공")
+    })
+    @GetMapping
+    public ResponseEntity<List<PartyResponseDto>> getParty(@RequestParam Long sortType) {
+        return ResponseEntity.ok(partyService.findParty(sortType));
     }
 
     @ApiResponses({
