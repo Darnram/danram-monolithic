@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static com.danram.danram.config.MapperConfig.modelMapper;
 
@@ -53,13 +54,26 @@ public class MemberServiceImpl implements MemberService {
     public LoginResponseDto signUp(final OauthLoginResponseDto dto) {
         Long memberId = System.currentTimeMillis();
 
+        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        int length = 6;
+
+        for(int i = 0; i < length; i++) {
+            int index = random.nextInt(alphabet.length());
+            char randomChar = alphabet.charAt(index);
+            sb.append(randomChar);
+        }
+
+        String randomString = sb.toString();
+
         Member member = Member.builder()
                 .memberId(memberId)
                 .loginType(dto.getLoginType())
                 .img(dto.getProfileImg())
                 .ban(false)
                 .pro(false)
-                .nickname(dto.getNickname())
+                .nickname(randomString)
                 .email(dto.getEmail())
                 .accessToken(JwtUtil.createJwt(memberId, dto.getEmail()))
                 .accessTokenExpiredAt(LocalDate.now().plusYears(1))
@@ -204,11 +218,13 @@ public class MemberServiceImpl implements MemberService {
                 () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
         );
 
-        memberRepository.delete(member);
+        member.setEmail("");
 
-        final DeletedMember map = modelMapper.map(member, DeletedMember.class);
+        member.setNickname("이름 없음");
 
-        deletedMemberRepository.save(map);
+        member.setImg("https://mblogthumb-phinf.pstatic.net/MjAyMDExMDFfMTgy/MDAxNjA0MjI4ODc1NDMw.Ex906Mv9nnPEZGCh4SREknadZvzMO8LyDzGOHMKPdwAg.ZAmE6pU5lhEdeOUsPdxg8-gOuZrq_ipJ5VhqaViubI4g.JPEG.gambasg/%EC%9C%A0%ED%8A%9C%EB%B8%8C_%EA%B8%B0%EB%B3%B8%ED%94%84%EB%A1%9C%ED%95%84_%ED%95%98%EB%8A%98%EC%83%89.jpg?type=w800");
+
+        memberRepository.save(member);
     }
 
     @Override

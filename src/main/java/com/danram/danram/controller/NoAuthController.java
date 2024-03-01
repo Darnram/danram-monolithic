@@ -10,11 +10,12 @@ import com.danram.danram.service.comment.CommentService;
 import com.danram.danram.service.feed.FeedService;
 import com.danram.danram.service.member.MemberService;
 import com.danram.danram.service.party.PartyService;
-import com.danram.danram.service.s3.S3UploadService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,6 @@ public class NoAuthController {
     private final PartyService partyService;
     private final FeedService feedService;
     private final CommentService commentService;
-    private final S3UploadService s3UploadService;
 
     @PostMapping("/token/reissue")
     public ResponseEntity<TokenResponseDto> reissueAccessToken() {
@@ -91,6 +91,29 @@ public class NoAuthController {
     public ResponseEntity<List<String>> getAuthorities() {
         return ResponseEntity.ok(memberService.getAuthorities());
     }
+
+    @GetMapping("/privacy/service")
+    public String fetchServiceHtml() {
+        try {
+            Document doc = Jsoup.connect("https://github.com/Darnram/privacy/raw/main/service.html").get();
+            return doc.html();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error occurred while fetching HTML";
+        }
+    }
+
+    @GetMapping("/privacy/policy")
+    public String fetchPolicyHtml() {
+        try {
+            Document doc = Jsoup.connect("https://github.com/Darnram/privacy/raw/main/policy.html").get();
+            return doc.html();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error occurred while fetching HTML";
+        }
+    }
+
 /*
     @PostMapping(value = "/s3", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> upload(@RequestParam("img")MultipartFile file) throws IOException {

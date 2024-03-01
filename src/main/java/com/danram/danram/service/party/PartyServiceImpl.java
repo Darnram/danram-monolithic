@@ -194,7 +194,6 @@ public class PartyServiceImpl implements PartyService {
             log.info("size");
             Party party = partyMember.getParty();
             PartyResponseDto responseDto = modelMapper.map(party, PartyResponseDto.class);
-            responseDto.setHasNextSlice(partyMemberList.hasNext());
             responseDtoList.add(responseDto);
         }
 
@@ -339,7 +338,6 @@ public class PartyServiceImpl implements PartyService {
 
         for (Party party : partyList) {
             PartyResponseDto dto = modelMapper.map(party, PartyResponseDto.class);
-            dto.setHasNextSlice(partyList.hasNext());
             responseDtoList.add(dto);
         }
 

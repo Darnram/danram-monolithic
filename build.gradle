@@ -57,6 +57,8 @@ dependencies {
 
     //slack
     implementation 'com.github.maricn:logback-slack-appender:1.4.0'
+
+    implementation 'org.jsoup:jsoup:1.13.1'
 }
 
 tasks.named('test') {

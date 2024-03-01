@@ -18,5 +18,4 @@ public class PartyResponseDto {
     private Long max;
     private Long currentCount;
     private String partyType;
-    private Boolean hasNextSlice;
 }
