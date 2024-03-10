@@ -16,6 +16,10 @@ spring:
     show-sql: true
     generate-ddl: false
 
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
 cloud:
   aws:
     s3:

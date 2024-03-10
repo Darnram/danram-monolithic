@@ -15,5 +15,6 @@ public class CommentAllResponseDto {
     private String memberName;
     private String content;
     private Long likeCount;
+    private String profileImg;
     private LocalDateTime createdAt;
 }

@@ -3,6 +3,7 @@ package com.danram.danram.service.comment;
 import com.danram.danram.domain.Authority;
 import com.danram.danram.domain.Comment;
 import com.danram.danram.domain.CommentLike;
+import com.danram.danram.domain.Member;
 import com.danram.danram.dto.request.comment.CommentAddRequestDto;
 import com.danram.danram.dto.request.comment.CommentEditRequestDto;
 import com.danram.danram.dto.response.comment.CommentAddResponseDto;
@@ -79,28 +80,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public String deleteComment(final Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
+        Comment comment = commentRepository.findByCommentIdAndMemberId(commentId, JwtUtil.getMemberId()).orElseThrow(
                 () -> new CommentIdNotFoundException(commentId)
         );
 
-        List<Authority> auths = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
-                () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
-        ).getAuthorities();
+        comment.setDeleted(true);
 
+        commentRepository.save(comment);
 
-        if(comment.getMemberId() == JwtUtil.getMemberId()) {
-            comment.setDeleted(true);
-
-            return "Deleted by user";
-        }
-        else if(auths.contains("ROLE_ADMIN")) {
-            comment.setDeleted(true);
-
-            return "Deleted by admin";
-        }
-        else {
-            throw new NotAuthorityException(JwtUtil.getEmail());
-        }
+        return "success";
     }
 
     @Override
@@ -152,9 +140,7 @@ public class CommentServiceImpl implements CommentService {
         for(Comment comment: updatedAt) {
             final int size = commentLikeRepository.findByCommentIdAndDeletedFalse(comment.getCommentId()).size();
 
-            String forObject = memberRepository.findById(JwtUtil.getMemberId()).orElseThrow(
-                    () -> new MemberIdNotFoundException(JwtUtil.getMemberId())
-            ).getNickname();
+            Optional<Member> forObject = memberRepository.findById(JwtUtil.getMemberId());
 
             responseDtoList.add(
                     CommentAllResponseDto.builder()
@@ -162,7 +148,8 @@ public class CommentServiceImpl implements CommentService {
                             .content(comment.getContent())
                             .likeCount((long) size)
                             .memberId(comment.getMemberId())
-                            .memberName(forObject == null ? "이름 없음" : forObject)
+                            .profileImg(forObject.isEmpty() ? "https://i.namu.wiki/i/Bge3xnYd4kRe_IKbm2uqxlhQJij2SngwNssjpjaOyOqoRhQlNwLrR2ZiK-JWJ2b99RGcSxDaZ2UCI7fiv4IDDQ.webp" : forObject.get().getImg())
+                            .memberName(forObject.isEmpty() ? "이름 없음" : forObject.get().getNickname())
                             .createdAt(comment.getUpdatedAt())
                             .build()
             );

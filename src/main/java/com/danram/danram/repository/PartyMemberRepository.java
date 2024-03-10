@@ -23,4 +23,5 @@ public interface PartyMemberRepository extends JpaRepository<PartyMember,Long> {
     public Optional<PartyMember> findByMemberIdAndParty(@Param("memberId") Long memberId,@Param("party") Party party);
     public List<PartyMember> findByParty(Party party);
     public Optional<PartyMember> findByPartyAndMemberId(Party party, Long memberId);
+    public List<PartyMember> findByMemberId(Long memberId);
 }

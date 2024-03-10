@@ -10,6 +10,7 @@ import com.danram.danram.service.party.PartyService;
 import com.danram.danram.service.s3.S3UploadService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.annotation.MultipartConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import java.util.List;
 @RequestMapping("/party")
 @RequiredArgsConstructor
 @Slf4j
+@MultipartConfig(maxFileSize = 100 * 1024 * 1024) // 10MB
 public class PartyController {
     /**
      * TODO
@@ -74,12 +76,20 @@ public class PartyController {
         return ResponseEntity.ok(partyService.addImg(partyId, imgUrl));
     }
 
-    @ApiResponses({
-            @ApiResponse(responseCode = "200",description = "내 모임 조회")
+    /*@ApiResponses({
+            @ApiResponse(responseCode = "200",description = "내 모임 조회, page")
     })
     @GetMapping("/my")
     public ResponseEntity<List<PartyResponseDto>> getMyParty(@RequestParam Integer pages) {
         return ResponseEntity.ok(partyService.findMyParty(pages));
+    }*/
+
+    @ApiResponses({
+            @ApiResponse(responseCode = "200",description = "내 모임 조회")
+    })
+    @GetMapping("/my")
+    public ResponseEntity<List<PartyResponseDto>> getMyParty() {
+        return ResponseEntity.ok(partyService.findMyParty());
     }
 
     /*@ApiResponses({

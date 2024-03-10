@@ -302,6 +302,25 @@ public class PartyServiceImpl implements PartyService {
 
     @Override
     @Transactional
+    public List<PartyResponseDto> findMyParty() {
+        List<PartyResponseDto> responseDtoList = new ArrayList<>();
+
+        Long memberId = JwtUtil.getMemberId();
+
+        final List<PartyMember> byMemberId = partyMemberRepository.findByMemberId(memberId);
+
+        for (PartyMember partyMember : byMemberId) {
+            log.info("size");
+            Party party = partyMember.getParty();
+            PartyResponseDto responseDto = modelMapper.map(party, PartyResponseDto.class);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
+    }
+
+    @Override
+    @Transactional
     public PartyEditResponseDto editParty(PartyEditRequestDto dto, String imgUrl) {
         Long memberId = JwtUtil.getMemberId();
 
